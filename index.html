@@ -41,6 +41,12 @@
             box-shadow: none !important;
         }
 
+        /* 核心修复：防止底层渲染引擎将文字和区块从中间切断 */
+        li, h2, h3, p, .mb-5, .mb-3, .mb-2 {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
         @media print {
             body { background-color: white; }
             .no-print { display: none !important; }
@@ -53,8 +59,8 @@
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-3 flex flex-row justify-between items-center gap-4">
             
             <div>
-                <h1 class="text-base font-bold font-sans text-gray-800 lang-cn">简历</h1>
-                <h1 class="text-base font-bold font-sans text-gray-800 lang-en">Resume</h1>
+                <h1 class="text-base font-bold font-sans text-gray-800 lang-cn">简历控制台</h1>
+                <h1 class="text-base font-bold font-sans text-gray-800 lang-en">Resume Control</h1>
             </div>
 
             <div class="flex gap-2 font-sans items-center justify-end">
@@ -89,7 +95,6 @@
         <div class="lang-cn">
             <header class="border-b-[3px] border-gray-900 pb-5 mb-6 text-center">
                 <h1 class="text-4xl font-bold tracking-widest mb-2" contenteditable="true">张 澄</h1>
-                <p class="text-xl text-gray-700 font-medium mb-4" contenteditable="true">全世界最爱丹增玉珍的人</p>
                 <p class="text-xl text-gray-700 font-medium mb-4" contenteditable="true">金融监管与数据分析专家</p>
                 <div class="text-sm text-gray-600 flex flex-row justify-center gap-x-5" contenteditable="true">
                     <span class="flex items-center">
@@ -210,7 +215,6 @@
         <div class="lang-en">
             <header class="border-b-[3px] border-gray-900 pb-5 mb-6 text-center font-serif">
                 <h1 class="text-4xl font-bold tracking-wide mb-2" contenteditable="true">CHENG ZHANG</h1>
-                <p class="text-xl text-gray-700 font-medium mb-4" contenteditable="true">The person who loves Tenzin Yuzhen the most in the world</p>
                 <p class="text-xl text-gray-700 font-medium mb-4" contenteditable="true">Financial Regulator & Data Analysis Specialist</p>
                 <div class="text-sm text-gray-600 flex flex-row justify-center gap-x-5" contenteditable="true">
                     <span class="flex items-center">
@@ -364,29 +368,24 @@
 
             const element = document.getElementById('resume-paper');
             
-            // 核心修复逻辑：导出时移除 HTML 内边距，改由底层库的 margin 接管分页边距。
-            // 确保页面间隔不再“连在一起”，且强制控制宽度防止右侧裁减。
             element.classList.add('pdf-export-mode');
             
             const opt = {
-                // margin: [top, left] (mm)
-                // 顶部/底部留出 15mm 完美分页距，左右留出 20mm 边距
                 margin:       [15, 20], 
                 filename:     currentLangCode === 'cn' ? '张澄_简历.pdf' : 'Cheng_Zhang_Resume.pdf',
                 image:        { type: 'jpeg', quality: 0.98 },
-                // 适当放大渲染窗口宽度，确保文字不拥挤不越界
                 html2canvas:  { scale: 2, useCORS: true, windowWidth: 820 },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                // 核心防切割逻辑：告诉生成引擎，遇到列表项(li)和标题区块时，宁可推到下一页，也绝不从中间切断
+                pagebreak:    { mode: ['css', 'legacy'], avoid: ['li', 'h2', 'h3', '.mb-5', '.mb-3', '.mb-2', 'p'] }
             };
 
-            // 获取 PDF 实例后，利用循环在每一页的底部中央注入页码
             html2pdf().set(opt).from(element).toPdf().get('pdf').then(function (pdf) {
                 const totalPages = pdf.internal.getNumberOfPages();
                 for (let i = 1; i <= totalPages; i++) {
                     pdf.setPage(i);
                     pdf.setFontSize(9);
                     pdf.setTextColor(128);
-                    // 绘制类似 "1 / 2" 的页码
                     pdf.text(i + ' / ' + totalPages, pdf.internal.pageSize.getWidth() / 2, pdf.internal.pageSize.getHeight() - 7, {align: 'center'});
                 }
             }).save().then(() => {
