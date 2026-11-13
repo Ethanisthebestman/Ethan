@@ -31,20 +31,33 @@
             color: #4b5563;
         }
 
-        /* 导出 PDF 时的绝对尺寸控制，确保分页间隔完美且右侧不被裁剪 */
+        /* 导出 PDF 时的绝对尺寸控制 */
         .pdf-export-mode {
-            /* 核心修复：增加 2mm 的左右内边距作为“渲染安全区”，防止衬线字体左侧溢出被 Canvas 切割 */
-            padding: 0 2mm !important;
+            /* 终极修复：明确设置左右两侧 5mm 的 Padding，作为绝对渲染安全区 */
+            padding-left: 5mm !important;
+            padding-right: 5mm !important;
             box-sizing: border-box !important;
-            width: 170mm !important; /* A4(210) - 左右各20mm边距 */
-            max-width: 170mm !important;
+            
+            /* 宽度同步减去左右新增的各 5mm 边距，确保总宽度不溢出 */
+            width: 160mm !important; 
+            max-width: 160mm !important;
             min-height: auto !important;
+            
+            /* 强制居中 */
             margin: 0 auto !important;
             box-shadow: none !important;
         }
 
-        /* 防止底层渲染引擎将文字和区块从中间切断 */
-        li, h2, h3, p, .mb-5, .mb-3, .mb-2 {
+        /* 强制防切割引擎：使用更严格的 CSS 分页控制，防止跨页切割 */
+        .pdf-export-mode section {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+        
+        /* 为了防止极端情况下 section 过长被强切，同时也对内部区块施加防切 */
+        .pdf-export-mode .mb-5, 
+        .pdf-export-mode .mb-3, 
+        .pdf-export-mode .mb-2 {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
         }
@@ -90,6 +103,7 @@
         </div>
     </div>
 
+    <!-- 简历主容器 -->
     <div id="resume-paper" class="w-[210mm] max-w-[210mm] mx-auto bg-white shadow-xl mb-12 box-border relative px-[20mm] py-[15mm]" style="min-height: 297mm;">
         
         <!-- ==================== 中文版 ==================== -->
@@ -370,13 +384,22 @@
             
             element.classList.add('pdf-export-mode');
             
+            // 使用全新的渲染控制参数，彻底解决左侧像素丢失
             const opt = {
-                margin:       [15, 20], 
+                // margin 改为只控制上下分页间距，左右间距完全交给内部 padding 控制 (0)
+                margin:       [15, 0, 15, 0], 
                 filename:     currentLangCode === 'cn' ? '张澄_简历.pdf' : 'Cheng_Zhang_Resume.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, windowWidth: 820 },
+                image:        { type: 'jpeg', quality: 1.0 }, 
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true, 
+                    windowWidth: 820,
+                    letterRendering: true,
+                    x: 0,
+                    y: 0
+                },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak:    { mode: ['css', 'legacy'], avoid: ['li', 'h2', 'h3', '.mb-5', '.mb-3', '.mb-2', 'p'] }
+                pagebreak:    { mode: ['css', 'legacy'], avoid: ['section', '.mb-5', '.mb-3', '.mb-2', 'li'] }
             };
 
             html2pdf().set(opt).from(element).toPdf().get('pdf').then(function (pdf) {
