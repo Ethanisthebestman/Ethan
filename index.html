@@ -31,33 +31,20 @@
             color: #4b5563;
         }
 
-        /* 导出 PDF 时的绝对尺寸控制 */
+        /* 导出 PDF 时的核心修复模式 */
         .pdf-export-mode {
-            /* 终极修复：明确设置左右两侧 5mm 的 Padding，作为绝对渲染安全区 */
-            padding-left: 5mm !important;
-            padding-right: 5mm !important;
-            box-sizing: border-box !important;
-            
-            /* 宽度同步减去左右新增的各 5mm 边距，确保总宽度不溢出 */
-            width: 160mm !important; 
-            max-width: 160mm !important;
-            min-height: auto !important;
-            
-            /* 强制居中 */
-            margin: 0 auto !important;
+            /* 根治 html2canvas 切割 Bug：取消居中，强制靠左，消除截图引擎的偏移计算误差 */
+            margin: 0 !important;
             box-shadow: none !important;
+            /* 移除多余的 scale 缩放，保持完美的 A4 物理比例 (210mm) */
         }
 
-        /* 强制防切割引擎：使用更严格的 CSS 分页控制，防止跨页切割 */
-        .pdf-export-mode section {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-        
-        /* 为了防止极端情况下 section 过长被强切，同时也对内部区块施加防切 */
+        /* 强制防切割引擎：保护大板块和段落不被腰斩 */
+        .pdf-export-mode section,
         .pdf-export-mode .mb-5, 
         .pdf-export-mode .mb-3, 
-        .pdf-export-mode .mb-2 {
+        .pdf-export-mode .mb-2,
+        .pdf-export-mode li {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
         }
@@ -65,6 +52,7 @@
         @media print {
             body { background-color: white; }
             .no-print { display: none !important; }
+            #resume-paper { box-shadow: none !important; margin: 0 !important; }
         }
     </style>
 </head>
@@ -83,7 +71,7 @@
                 <div class="relative">
                     <button id="lang-menu-button" onclick="toggleLangDropdown(event)" class="px-3 py-1.5 bg-slate-100 text-slate-700 text-sm font-medium rounded hover:bg-slate-200 transition shadow-sm border border-slate-300 flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <span class="lang-cn">语言</span>
+                        <span class="lang-cn">切换语言</span>
                         <span class="lang-en">Language</span>
                         <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
@@ -103,7 +91,7 @@
         </div>
     </div>
 
-    <!-- 简历主容器 -->
+    <!-- 简历主容器：恢复为完美的标准 A4 宽度 210mm，左右内边距由 Tailwind px-[20mm] 控制 -->
     <div id="resume-paper" class="w-[210mm] max-w-[210mm] mx-auto bg-white shadow-xl mb-12 box-border relative px-[20mm] py-[15mm]" style="min-height: 297mm;">
         
         <!-- ==================== 中文版 ==================== -->
@@ -382,22 +370,17 @@
 
             const element = document.getElementById('resume-paper');
             
+            // 核心修复逻辑：导出时暂时取消元素的水平居中，让其贴紧屏幕最左侧。
+            // html2canvas 在处理 mx-auto 元素时，经常会出现水平 x 轴计算偏移，导致左侧/右侧内容超出画布被粗暴裁切。
+            element.classList.remove('mx-auto');
             element.classList.add('pdf-export-mode');
             
-            // 使用全新的渲染控制参数，彻底解决左侧像素丢失
+            // 完全摒弃之前导致版面崩塌的强制缩放和坐标偏移，回归最自然的捕获
             const opt = {
-                // margin 改为只控制上下分页间距，左右间距完全交给内部 padding 控制 (0)
-                margin:       [15, 0, 15, 0], 
+                margin:       [15, 0], // 上下留白，左右由 HTML 容器自己的 padding (20mm) 自动支撑
                 filename:     currentLangCode === 'cn' ? '张澄_简历.pdf' : 'Cheng_Zhang_Resume.pdf',
                 image:        { type: 'jpeg', quality: 1.0 }, 
-                html2canvas:  { 
-                    scale: 2, 
-                    useCORS: true, 
-                    windowWidth: 820,
-                    letterRendering: true,
-                    x: 0,
-                    y: 0
-                },
+                html2canvas:  { scale: 2, useCORS: true }, // 去掉所有的 windowWidth、x、y 等人为坐标干扰
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
                 pagebreak:    { mode: ['css', 'legacy'], avoid: ['section', '.mb-5', '.mb-3', '.mb-2', 'li'] }
             };
@@ -411,10 +394,13 @@
                     pdf.text(i + ' / ' + totalPages, pdf.internal.pageSize.getWidth() / 2, pdf.internal.pageSize.getHeight() - 7, {align: 'center'});
                 }
             }).save().then(() => {
+                // 导出完成后恢复居中，UI 保持不变
+                element.classList.add('mx-auto');
                 element.classList.remove('pdf-export-mode');
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
             }).catch(() => {
+                element.classList.add('mx-auto');
                 element.classList.remove('pdf-export-mode');
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
