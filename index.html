@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>张澄 (Cheng Zhang) - Personal Space</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 采用更具现代感和极客感的字体组合 */
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8fafc;
+        }
+        .font-serif-custom {
+            font-family: "Palatino Linotype", "Book Antiqua", Palatino, STSong, "华文宋体", serif;
+        }
+        
+        /* 电影情绪蓝调强调色 */
+        .moody-accent {
+            color: #3b82f6;
+        }
+        .bg-moody {
+            background-color: #0f172a; /* 深邃的 slate-900 */
+        }
+        
+        /* 卡片悬浮动画 */
+        .hover-card {
+            transition: all 0.3s ease;
+        }
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased flex flex-col md:flex-row min-h-screen">
+
+    <!-- 左侧固定导航栏 (Sidebar) -->
+    <aside class="md:w-72 bg-moody text-slate-300 flex flex-col md:fixed md:h-screen md:left-0 top-0 shadow-2xl z-20">
+        <div class="p-8 md:p-10 flex flex-col h-full">
+            <!-- 头像与个人信息 -->
+            <div class="mb-10 text-center md:text-left">
+                <!-- 极简头像框 -->
+                <div class="w-24 h-24 rounded-full bg-slate-800 border-2 border-blue-500/30 flex items-center justify-center mx-auto md:mx-0 mb-6 shadow-lg overflow-hidden">
+                    <span class="text-3xl font-serif-custom font-bold text-slate-200">CZ</span>
+                </div>
+                <h1 class="text-2xl font-serif-custom font-bold text-white mb-2 tracking-widest">张 澄</h1>
+                <p class="text-sm text-slate-400 mb-1">Cheng Zhang</p>
+                <div class="w-8 h-1 bg-blue-500 rounded mx-auto md:mx-0 mt-4 mb-4"></div>
+                <p class="text-xs font-medium text-slate-300 uppercase tracking-widest leading-relaxed">
+                    金融监管分析师<br>量化数据开发者<br>视觉与影像创作者
+                </p>
+            </div>
+
+            <!-- 导航菜单 -->
+            <nav class="flex-grow flex flex-col gap-4 text-sm font-medium tracking-wide">
+                <a href="#home" class="flex items-center gap-3 text-white hover:text-blue-400 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    首 页 HOME
+                </a>
+                <a href="#projects" class="flex items-center gap-3 hover:text-blue-400 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                    项 目 PROJECTS
+                </a>
+                <a href="#visuals" class="flex items-center gap-3 hover:text-blue-400 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    影 像 VISUALS
+                </a>
+                
+                <!-- 核心跳转：跳转到简历 -->
+                <a href="resume.html" class="flex items-center gap-3 mt-4 py-2 px-4 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-lg hover:bg-blue-600 hover:text-white transition group">
+                    <svg class="w-4 h-4 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    📄 查阅在线简历
+                </a>
+            </nav>
+
+            <!-- 底部联系信息 -->
+            <div class="mt-8 text-xs text-slate-500 flex flex-col gap-2">
+                <span class="flex items-center gap-2">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    academy_zhang@163.com
+                </span>
+                <span class="flex items-center gap-2">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Xizang, China
+                </span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 右侧主内容区 -->
+    <main class="md:ml-72 flex-grow bg-slate-50/50">
+        <div class="max-w-5xl mx-auto px-6 py-12 md:py-20 md:px-16">
+            
+            <!-- Hero 宣言区 -->
+            <section id="home" class="mb-20 animate-fade-in-up">
+                <h2 class="text-4xl md:text-5xl font-bold text-slate-900 mb-6 leading-tight">
+                    Hello, 我是<span class="moody-accent font-serif-custom">张澄</span>。<br>
+                    <span class="text-2xl md:text-3xl text-slate-500 font-medium mt-2 block">探索金融底层逻辑与极致的视觉表达。</span>
+                </h2>
+                <p class="text-slate-600 leading-relaxed max-w-3xl text-lg mb-8">
+                    作为一名身处雪域高原的金融监管工作者，我依靠纯黑无糖咖啡续命，日常穿梭于 DB2 数据库与 Python 脚本之间，构建底层数据穿透模型。在理性与感性的交界处，我热衷于极客终端工作流（M4 Mac + Docker + Ollama），用 LightGBM 捕捉量化交易信号，同时运用 3D LUT 与本地 AI 模型，渲染充满日系电影情绪蓝调的视觉影像。
+                </p>
+                <!-- 直接跳转简历的大按钮 -->
+                <a href="resume.html" class="inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-white bg-slate-900 rounded-lg shadow-lg hover:bg-blue-600 hover:shadow-blue-500/30 transition duration-300">
+                    查看我的专业简历 &rarr;
+                </a>
+            </section>
+
+            <!-- 核心板块 (Grid) -->
+            <section id="projects" class="mb-20">
+                <div class="flex items-center gap-4 mb-10">
+                    <h3 class="text-2xl font-bold text-slate-800 uppercase tracking-widest">核心领域</h3>
+                    <div class="h-px bg-slate-300 flex-grow"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    
+                    <!-- 卡片 1：数据挖掘与量化 -->
+                    <div class="bg-white rounded-xl p-8 border border-slate-100 shadow-sm hover-card relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-bl-full -z-0"></div>
+                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center mb-6 z-10 relative">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mb-3 relative z-10">金融量化与数据挖掘</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4 relative z-10">
+                            独立开发基于 Python 和 LightGBM 的 A 股量化交易模型。熟练运用 Pandas、SQL 进行特征工程与策略回测，构建交互式 Web 监管数据看板，精准识别违规金融套利。
+                        </p>
+                        <div class="flex flex-wrap gap-2 relative z-10">
+                            <span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs rounded-md font-medium">Python</span>
+                            <span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs rounded-md font-medium">LightGBM</span>
+                            <span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs rounded-md font-medium">SQL (DB2)</span>
+                        </div>
+                    </div>
+
+                    <!-- 卡片 2：极客工作流 -->
+                    <div class="bg-white rounded-xl p-8 border border-slate-100 shadow-sm hover-card relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-slate-800/5 rounded-bl-full -z-0"></div>
+                        <div class="w-12 h-12 bg-slate-100 text-slate-700 rounded-lg flex items-center justify-center mb-6 z-10 relative">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mb-3 relative z-10">终端与 AI 自动化</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4 relative z-10">
+                            沉浸式 macOS 终端极客（zsh），通过双屏 M4 硬件矩阵提升生产力。深度集成 Docker 容器化技术，熟练部署 Ollama、Dify 本地大模型环境，搭建 AI Agent 自动化工作流。
+                        </p>
+                        <div class="flex flex-wrap gap-2 relative z-10">
+                            <span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs rounded-md font-medium">macOS / zsh</span>
+                            <span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs rounded-md font-medium">Docker</span>
+                            <span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs rounded-md font-medium">Ollama / Dify</span>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- 视觉与摄影板块 -->
+            <section id="visuals" class="mb-10">
+                <div class="flex items-center gap-4 mb-10">
+                    <h3 class="text-2xl font-bold text-slate-800 uppercase tracking-widest">视觉与色彩</h3>
+                    <div class="h-px bg-slate-300 flex-grow"></div>
+                </div>
+
+                <div class="bg-slate-900 rounded-2xl p-8 md:p-12 relative overflow-hidden shadow-2xl">
+                    <!-- 模拟深蓝色调的背景光晕 -->
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+                    <div class="absolute bottom-0 left-0 w-48 h-48 bg-cyan-500/20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4"></div>
+                    
+                    <div class="relative z-10 text-white">
+                        <div class="w-12 h-12 bg-white/10 text-blue-400 rounded-full flex items-center justify-center mb-6 backdrop-blur-sm">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-4 font-serif-custom tracking-wide">情绪蓝调与日系光影</h4>
+                        <p class="text-slate-300 leading-relaxed max-w-2xl mb-8">
+                            摄影不仅是记录，更是用代码与算法去重塑色彩。我擅长运用自研 Python 脚本结合 3D LUTs 进行深度 Color Grading，确立独特的日系情绪蓝调审美。同时探索 ComfyUI 节点式 AI 视频生成，并在 Final Cut Pro 中完成最终的视觉表达。
+                        </p>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="px-3 py-1 bg-white/10 text-blue-200 border border-white/10 text-xs rounded-full font-medium backdrop-blur-sm">Cinematic Photography</span>
+                            <span class="px-3 py-1 bg-white/10 text-blue-200 border border-white/10 text-xs rounded-full font-medium backdrop-blur-sm">3D LUTs</span>
+                            <span class="px-3 py-1 bg-white/10 text-blue-200 border border-white/10 text-xs rounded-full font-medium backdrop-blur-sm">ComfyUI Anime Generation</span>
+                            <span class="px-3 py-1 bg-white/10 text-blue-200 border border-white/10 text-xs rounded-full font-medium backdrop-blur-sm">Final Cut Pro</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 页脚 -->
+            <footer class="mt-20 border-t border-slate-200 pt-8 text-center md:text-left text-sm text-slate-500 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p>&copy; 2026 Cheng Zhang. All rights reserved.</p>
+                <a href="https://github.com/" target="_blank" class="hover:text-slate-800 transition">
+                    Hosted on GitHub Pages
+                </a>
+            </footer>
+
+        </div>
+    </main>
+
+</body>
+</html>
