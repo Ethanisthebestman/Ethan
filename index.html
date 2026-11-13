@@ -4,184 +4,215 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>张澄 (Cheng Zhang) - Resume</title>
-    <!-- 引入 Tailwind CSS 进行专业严肃的排版 -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 引入 html2pdf 库用于一键导出 PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
-        /* 严肃专业的字体设定 */
         body {
-            font-family: "Times New Roman", STSong, "华文宋体", serif;
+            /* 采用更优雅的衬线字体组合 */
+            font-family: "Palatino Linotype", "Book Antiqua", Palatino, STSong, "华文宋体", serif;
             background-color: #f3f4f6;
         }
         
-        /* 禁用所有可编辑元素的鼠标交互和高亮 */
         [contenteditable="true"] {
-            pointer-events: none; /* 禁止鼠标点击和选择 */
-            outline: none !important; /* 移除任何情况下的轮廓线 */
+            pointer-events: none;
+            outline: none !important;
             cursor: default;
         }
         
-        /* 英文版默认隐藏 */
-        .lang-en {
-            display: none;
-        }
+        /* 语言切换控制核心逻辑 */
+        body.lang-cn-active .lang-en { display: none !important; }
+        body.lang-en-active .lang-cn { display: none !important; }
         
-        /* 打印/导出 PDF 时的样式优化 */
+        /* SVG 图标样式调整，使其和文本完美对齐 */
+        .icon-svg {
+            display: inline-block;
+            vertical-align: text-bottom;
+            width: 1.1em;
+            height: 1.1em;
+            margin-right: 0.25rem;
+            color: #4b5563;
+        }
+
+        /* 打印及导出 PDF 时的绝对 A4 样式控制 */
         @media print {
             body { background-color: white; }
             .no-print { display: none !important; }
             #resume-paper { 
-                box-shadow: none; 
-                margin: 0; 
-                padding: 0;
-                width: 100%;
-                max-width: 100%;
-            }
-            /* 确保在打印状态下也没有任何编辑痕迹 */
-            [contenteditable="true"] {
-                pointer-events: none !important;
-                outline: none !important;
-                background-color: transparent !important;
+                box-shadow: none !important; 
+                margin: 0 !important; 
+                width: 210mm !important;
+                max-width: 210mm !important;
+                min-height: 297mm !important;
+                padding: 15mm 20mm !important;
             }
         }
     </style>
 </head>
-<body class="text-gray-900">
+<body class="text-gray-900 lang-cn-active">
 
     <!-- 顶部控制栏 (不会被打印到 PDF 中) -->
-    <div class="max-w-4xl mx-auto my-6 px-6 no-print">
+    <div class="max-w-[210mm] mx-auto my-4 sm:my-6 px-4 sm:px-0 no-print">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            
+            <!-- 动态标题 -->
             <div>
-                <h1 class="text-lg font-bold font-sans text-gray-800">简历控制台 / Resume Control</h1>
-                <p class="text-sm text-gray-500 font-sans">当前为只读展示模式，不支持在线编辑。</p>
+                <h1 class="text-lg font-bold font-sans text-gray-800 lang-cn">简历控制台</h1>
+                <h1 class="text-lg font-bold font-sans text-gray-800 lang-en">Resume Control</h1>
             </div>
-            <div class="flex gap-3 font-sans">
-                <button onclick="toggleLanguage()" class="px-5 py-2.5 bg-slate-800 text-white text-sm font-medium rounded hover:bg-slate-700 transition shadow">
-                    切换中/英文 (EN/CN)
-                </button>
-                <button onclick="exportToPDF()" class="px-5 py-2.5 bg-blue-700 text-white text-sm font-medium rounded hover:bg-blue-600 transition shadow flex items-center gap-2">
+
+            <!-- 右侧操作区 -->
+            <div class="flex gap-3 font-sans items-center w-full sm:w-auto justify-between sm:justify-end">
+                
+                <!-- 语言下拉菜单 -->
+                <div class="relative">
+                    <button id="lang-menu-button" onclick="toggleLangDropdown(event)" class="px-3 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded hover:bg-slate-200 transition shadow-sm border border-slate-300 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="lang-cn">切换语言</span>
+                        <span class="lang-en">Language</span>
+                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <!-- 下拉项 -->
+                    <div id="lang-dropdown" class="hidden absolute left-0 sm:right-0 sm:left-auto mt-2 w-32 bg-white rounded-md shadow-lg border border-gray-100 ring-1 ring-black ring-opacity-5 z-50 focus:outline-none overflow-hidden">
+                        <button onclick="setLanguage('cn')" class="block w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition">中文</button>
+                        <button onclick="setLanguage('en')" class="block w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition">English</button>
+                    </div>
+                </div>
+                
+                <!-- 导出 PDF 按钮 -->
+                <button onclick="exportToPDF()" class="px-4 py-2 bg-blue-700 text-white text-sm font-medium rounded hover:bg-blue-600 transition shadow flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    一键导出 PDF
+                    <span class="lang-cn">导出 PDF</span>
+                    <span class="lang-en">Export PDF</span>
                 </button>
+                
             </div>
         </div>
     </div>
 
-    <!-- 简历主体内容区 (A4 比例) -->
-    <div id="resume-paper" class="max-w-4xl mx-auto bg-white shadow-xl mb-12 box-border" style="min-height: 297mm; padding: 15mm 20mm;">
+    <!-- 简历主体内容区 -->
+    <!-- 移动端自适应内边距 (px-5 py-8)，桌面端强制 A4 内边距 (sm:px-[20mm] sm:py-[15mm]) -->
+    <div id="resume-paper" class="w-full max-w-[210mm] mx-auto bg-white sm:shadow-xl mb-0 sm:mb-12 box-border relative px-5 py-8 sm:px-[20mm] sm:py-[15mm]" style="min-height: 297mm;">
         
         <!-- ==================== 中文版 (Chinese Version) ==================== -->
         <div class="lang-cn">
-            <!-- 头部信息 -->
-            <header class="border-b-2 border-gray-800 pb-5 mb-6 text-center">
-                <h1 class="text-4xl font-bold tracking-widest mb-3" contenteditable="true">张 澄</h1>
-                <p class="text-xl text-gray-700 mb-3" contenteditable="true">金融监管与数据分析专家</p>
-                <div class="text-sm text-gray-600 flex justify-center gap-6" contenteditable="true">
-                    <span>📍 西藏, 中国</span>
-                    <span>✉️ your.email@example.com</span>
-                    <span>📞 +86 138-XXXX-XXXX</span>
-                    <span>🎂 1995.12</span>
+            <header class="border-b-[3px] border-gray-900 pb-5 mb-6 text-center">
+                <h1 class="text-3xl sm:text-4xl font-bold tracking-widest mb-2" contenteditable="true">张 澄</h1>
+                <p class="text-lg sm:text-xl text-gray-700 font-medium mb-4" contenteditable="true">金融监管与数据分析专家</p>
+                <!-- 优化为响应式自动折行，并替换所有 Emoji 为专业 SVG 图标 -->
+                <div class="text-sm text-gray-600 flex flex-wrap justify-center gap-x-5 gap-y-2" contenteditable="true">
+                    <span class="flex items-center">
+                        <svg class="icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        中国
+                    </span>
+                    <span class="flex items-center">
+                        <svg class="icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        your.email@example.com
+                    </span>
+                    <span class="flex items-center">
+                        <svg class="icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                        +86 138-XXXX-XXXX
+                    </span>
+                    <span class="flex items-center">
+                        <svg class="icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        1995.12
+                    </span>
                 </div>
             </header>
 
-            <!-- 核心优势 -->
             <section class="mb-6">
-                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">核心优势</h2>
-                <ul class="list-disc list-inside text-sm leading-relaxed space-y-1 text-gray-800" contenteditable="true">
-                    <li>扎实的经济学理论基础与风险管理能力，深刻理解宏观经济与微观金融机构运作机制。</li>
-                    <li>精通金融监管大数据挖掘，熟练运用 EAST、1104 等监管系统，具备独立开发 Python/Pandas 数据看板的能力。</li>
-                    <li>具备 A股量化交易模型开发经验（LightGBM、特征工程），熟练掌握 SQL (DB2) 及终端自动化开发环境（Docker、Ollama）。</li>
-                    <li>出色的公文撰写与跨部门沟通协调能力，多次在系统内监管数据应用比武中斩获优异名次。</li>
+                <!-- 优化了标题排版，下划线更锐利 -->
+                <h2 class="text-base sm:text-lg font-bold border-b-2 border-gray-800 pb-1 mb-3 uppercase tracking-wider" contenteditable="true">核心优势</h2>
+                <ul class="list-disc list-outside ml-4 text-[13.5px] sm:text-sm leading-relaxed space-y-1.5 text-gray-800" contenteditable="true">
+                    <li><span class="font-bold">经济分析与风控：</span>扎实的经济学理论基础与风险管理能力，深刻理解宏观经济与微观金融机构运作机制。</li>
+                    <li><span class="font-bold">监管科技应用：</span>精通金融监管大数据挖掘，熟练运用监管信息系统，具备独立开发 Python/Pandas 数据看板的能力。</li>
+                    <li><span class="font-bold">量化建模与开发：</span>具备量化数据挖掘与模型开发经验（LightGBM、特征工程），熟练掌握 SQL (DB2) 及终端自动化开发环境（Docker、Ollama）。</li>
+                    <li><span class="font-bold">沟通与文案：</span>出色的公文撰写与跨部门沟通协调能力，多次在系统内监管数据应用比武中斩获优异名次。</li>
                 </ul>
             </section>
 
-            <!-- 工作经历 -->
             <section class="mb-6">
-                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">工作经历</h2>
+                <h2 class="text-base sm:text-lg font-bold border-b-2 border-gray-800 pb-1 mb-3 uppercase tracking-wider" contenteditable="true">工作经历</h2>
                 
-                <div class="mb-4">
-                    <div class="flex justify-between items-baseline mb-1">
-                        <h3 class="text-base font-bold text-gray-900" contenteditable="true">国家金融监督管理总局林芝监管分局</h3>
-                        <span class="text-sm text-gray-600" contenteditable="true">20XX.XX - 至今</span>
+                <div class="mb-5">
+                    <!-- 移动端换行，桌面端两端对齐 -->
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-1">
+                        <h3 class="text-base font-bold text-gray-900 leading-tight" contenteditable="true">某国家级金融监管机构 分支机构</h3>
+                        <span class="text-[13.5px] sm:text-sm text-gray-600 mt-1 sm:mt-0 whitespace-nowrap" contenteditable="true">20XX.XX - 至今</span>
                     </div>
-                    <div class="flex justify-between text-sm text-gray-700 italic mb-2">
-                        <span contenteditable="true">三级主任科员 / 银行机构监管科负责人</span>
-                        <span contenteditable="true">西藏, 林芝</span>
+                    <div class="flex flex-col sm:flex-row sm:justify-between text-[13.5px] sm:text-sm text-gray-700 italic mb-2">
+                        <span contenteditable="true">监管科室负责人 / 三级主任科员</span>
+                        <span contenteditable="true">中国某市</span>
                     </div>
-                    <ul class="list-disc list-inside text-sm leading-relaxed space-y-1 text-gray-800" contenteditable="true">
-                        <li>全面负责林芝及昌都地区银行业与保险业金融机构的日常非现场监管与风险排查。</li>
-                        <li>牵头开展辖区小微企业信贷风险智能检查，构建 EAST 系统“工商图谱”与“网络交易”双维穿透模型，精准打击普惠金融套利行为。</li>
-                        <li>自主开发基于 Python 和 Jupyter Notebook 的交互式 Web 数据看板，实现复杂 1104 监管报表的自动解析与交叉校验。</li>
-                        <li>担任中国农业发展银行林芝市分行行政处罚检查组廉政监督员 (2026.09)，严格规范执法流程。</li>
+                    <ul class="list-disc list-outside ml-4 text-[13.5px] sm:text-sm leading-relaxed space-y-1.5 text-gray-800" contenteditable="true">
+                        <li>全面负责辖区内银行业与保险业金融机构的日常非现场监管与风险排查，筑牢区域金融安全防线。</li>
+                        <li>牵头运用监管系统开展区域性信贷风险智能筛查与数据建模，构建底层数据穿透模型，精准识别并打击违规金融套利行为。</li>
+                        <li>自主开发基于 Python 和 Jupyter Notebook 的交互式 Web 数据看板，实现复杂监管报表的自动解析与交叉校验，大幅提升非现场检查效率。</li>
+                        <li>担任重要专项检查组特定监督职务，严格执行合规监督审查，规范行政执法流程。</li>
                     </ul>
                 </div>
 
                 <div class="mb-2">
-                    <div class="flex justify-between items-baseline mb-1">
-                        <h3 class="text-base font-bold text-gray-900" contenteditable="true">芜湖海关</h3>
-                        <span class="text-sm text-gray-600" contenteditable="true">20XX.XX - 20XX.XX (1年)</span>
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-1">
+                        <h3 class="text-base font-bold text-gray-900 leading-tight" contenteditable="true">某市级海关机构</h3>
+                        <span class="text-[13.5px] sm:text-sm text-gray-600 mt-1 sm:mt-0 whitespace-nowrap" contenteditable="true">20XX.XX - 20XX.XX</span>
                     </div>
-                    <div class="flex justify-between text-sm text-gray-700 italic mb-2">
+                    <div class="flex flex-col sm:flex-row sm:justify-between text-[13.5px] sm:text-sm text-gray-700 italic mb-2">
                         <span contenteditable="true">关员</span>
-                        <span contenteditable="true">安徽, 芜湖</span>
+                        <span contenteditable="true">中国某市</span>
                     </div>
-                    <ul class="list-disc list-inside text-sm leading-relaxed text-gray-800" contenteditable="true">
+                    <ul class="list-disc list-outside ml-4 text-[13.5px] sm:text-sm leading-relaxed text-gray-800" contenteditable="true">
                         <li>负责进出口货物的通关查验与统计分析工作，积累了丰富的国家行政执法与数据核查经验。</li>
                     </ul>
                 </div>
             </section>
 
-            <!-- 个人项目与技能 -->
             <section class="mb-6">
-                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">项目经验与技术栈</h2>
-                <div class="text-sm leading-relaxed text-gray-800">
-                    <div class="mb-2" contenteditable="true">
-                        <strong>量化交易与数据分析：</strong>独立开发 A股短线量化交易模型，运用 LightGBM 进行特征工程与 T+1/T+2 策略回测；熟悉 FRM（金融风险管理师）信用及市场风险评估体系。
+                <h2 class="text-base sm:text-lg font-bold border-b-2 border-gray-800 pb-1 mb-3 uppercase tracking-wider" contenteditable="true">项目经验与技术栈</h2>
+                <div class="text-[13.5px] sm:text-sm leading-relaxed text-gray-800 space-y-2">
+                    <div contenteditable="true">
+                        <span class="font-bold text-gray-900">量化与数据挖掘项目：</span>独立开发数据挖掘模型，运用 LightGBM 进行特征工程与策略回测分析；熟悉信用及市场风险评估体系。
                     </div>
-                    <div class="mb-2" contenteditable="true">
-                        <strong>开发与生产力工具：</strong>Python (Pandas, FastAPI), SQL (DB2), Docker, 终端环境 (zsh/macOS), GitHub Pages, Markdown。
+                    <div contenteditable="true">
+                        <span class="font-bold text-gray-900">开发与生产力工具：</span>Python (Pandas, FastAPI), SQL (DB2), Docker, 终端环境 (zsh/macOS), GitHub Pages部署, Markdown。
                     </div>
-                    <div class="mb-2" contenteditable="true">
-                        <strong>AI与多媒体创作：</strong>熟练部署本地大模型 (Ollama, Dify, OpenClaw) 及 ComfyUI 自动化视频生成工作流；精通 Final Cut Pro 视频剪辑与 Python/3D LUT 数字影像色彩引擎开发。
+                    <div contenteditable="true">
+                        <span class="font-bold text-gray-900">AI部署与多媒体：</span>熟练部署本地大语言模型 (Ollama, Dify) 及自动化视频生成工作流；精通 Final Cut Pro 视频剪辑与定制化色彩引擎开发。
                     </div>
                 </div>
             </section>
 
-            <!-- 教育背景 -->
             <section class="mb-6">
-                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">教育背景</h2>
-                <div class="mb-2" contenteditable="true">
-                    <div class="flex justify-between font-bold text-sm">
+                <h2 class="text-base sm:text-lg font-bold border-b-2 border-gray-800 pb-1 mb-3 uppercase tracking-wider" contenteditable="true">教育背景</h2>
+                <div class="mb-3" contenteditable="true">
+                    <div class="flex flex-col sm:flex-row sm:justify-between font-bold text-[13.5px] sm:text-sm leading-tight mb-0.5">
                         <span>Universitat Autònoma de Barcelona (西班牙巴塞罗那自治大学)</span>
-                        <span>毕业年份</span>
+                        <span class="text-gray-600 font-normal mt-1 sm:mt-0">毕业年份</span>
                     </div>
-                    <div class="text-sm italic">应用经济学 硕士 (Master in Applied Economics)</div>
+                    <div class="text-[13.5px] sm:text-sm italic text-gray-700">应用经济学 硕士 (Master in Applied Economics)</div>
                 </div>
-                <div class="mb-2" contenteditable="true">
-                    <div class="flex justify-between font-bold text-sm">
+                <div class="mb-3" contenteditable="true">
+                    <div class="flex flex-col sm:flex-row sm:justify-between font-bold text-[13.5px] sm:text-sm leading-tight mb-0.5">
                         <span>Belarusian State University (白俄罗斯国立大学)</span>
-                        <span>毕业年份</span>
+                        <span class="text-gray-600 font-normal mt-1 sm:mt-0">毕业年份</span>
                     </div>
-                    <div class="text-sm italic">经济学 硕士 (Master in Economics)</div>
+                    <div class="text-[13.5px] sm:text-sm italic text-gray-700">经济学 硕士 (Master in Economics)</div>
                 </div>
                 <div class="mb-2" contenteditable="true">
-                    <div class="flex justify-between font-bold text-sm">
-                        <span>上海本科院校 (请填写学校名称)</span>
-                        <span>毕业年份</span>
+                    <div class="flex flex-col sm:flex-row sm:justify-between font-bold text-[13.5px] sm:text-sm leading-tight mb-0.5">
+                        <span>上海某高校 (请填写学校名称)</span>
+                        <span class="text-gray-600 font-normal mt-1 sm:mt-0">毕业年份</span>
                     </div>
-                    <div class="text-sm italic">经济学/相关专业 学士</div>
+                    <div class="text-[13.5px] sm:text-sm italic text-gray-700">经济学/相关专业 学士</div>
                 </div>
             </section>
 
-            <!-- 荣誉与奖项 -->
             <section class="mb-2">
-                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">荣誉与奖项</h2>
-                <ul class="list-disc list-inside text-sm leading-relaxed space-y-1 text-gray-800" contenteditable="true">
-                    <li>荣获西藏金融监管局 EAST 系统应用比武 全区二等奖 (2026.04)</li>
+                <h2 class="text-base sm:text-lg font-bold border-b-2 border-gray-800 pb-1 mb-3 uppercase tracking-wider" contenteditable="true">荣誉与奖项</h2>
+                <ul class="list-disc list-outside ml-4 text-[13.5px] sm:text-sm leading-relaxed space-y-1.5 text-gray-800" contenteditable="true">
+                    <li>荣获省级监管系统数据应用比武 全区二等奖 (2026.04)</li>
                     <li>荣获区域监管数据库系统应用比武 全区一等奖 (2025.12 - 2026.01)</li>
-                    <li>获国家金融监督管理总局林芝监管分局提名为“全市普法工作先进个人” (2026.10)</li>
+                    <li>获市级政府部门提名为“全市普法工作先进个人” (2026.10)</li>
                 </ul>
             </section>
         </div>
@@ -189,159 +220,173 @@
 
         <!-- ==================== 英文版 (English Version) ==================== -->
         <div class="lang-en">
-            <!-- Header -->
-            <header class="border-b-2 border-gray-800 pb-5 mb-6 text-center font-serif">
-                <h1 class="text-4xl font-bold tracking-wide mb-3" contenteditable="true">CHENG ZHANG</h1>
-                <p class="text-xl text-gray-700 mb-3" contenteditable="true">Financial Regulator & Data Analysis Specialist</p>
-                <div class="text-sm text-gray-600 flex justify-center gap-6" contenteditable="true">
-                    <span>📍 Xizang, China</span>
-                    <span>✉️ your.email@example.com</span>
-                    <span>📞 +86 138-XXXX-XXXX</span>
-                    <span>🎂 Dec 1995</span>
+            <header class="border-b-[3px] border-gray-900 pb-5 mb-6 text-center font-serif">
+                <h1 class="text-3xl sm:text-4xl font-bold tracking-wide mb-2" contenteditable="true">CHENG ZHANG</h1>
+                <p class="text-lg sm:text-xl text-gray-700 font-medium mb-4" contenteditable="true">Financial Regulator & Data Analysis Specialist</p>
+                <div class="text-sm text-gray-600 flex flex-wrap justify-center gap-x-5 gap-y-2" contenteditable="true">
+                    <span class="flex items-center">
+                        <svg class="icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        China
+                    </span>
+                    <span class="flex items-center">
+                        <svg class="icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        your.email@example.com
+                    </span>
+                    <span class="flex items-center">
+                        <svg class="icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                        +86 138-XXXX-XXXX
+                    </span>
+                    <span class="flex items-center">
+                        <svg class="icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Dec 1995
+                    </span>
                 </div>
             </header>
 
-            <!-- Core Competencies -->
             <section class="mb-6 font-serif">
-                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">Core Competencies</h2>
-                <ul class="list-disc list-inside text-sm leading-relaxed space-y-1 text-gray-800" contenteditable="true">
-                    <li>Solid foundation in economic theory and risk management; deep understanding of macroeconomic and micro-financial institutional operations.</li>
-                    <li>Proficient in financial regulatory data mining using EAST and 1104 systems; highly capable of developing Python/Pandas data dashboards independently.</li>
-                    <li>Experience in quantitative trading model development (A-shares, LightGBM, feature engineering), SQL (DB2), and terminal-first workflows (Docker, Ollama).</li>
-                    <li>Excellent official document drafting and cross-departmental communication skills; multiple-award winner in system-wide regulatory data application competitions.</li>
+                <h2 class="text-base sm:text-lg font-bold border-b-2 border-gray-800 pb-1 mb-3 uppercase tracking-wider" contenteditable="true">Core Competencies</h2>
+                <ul class="list-disc list-outside ml-4 text-[13.5px] sm:text-sm leading-relaxed space-y-1.5 text-gray-800" contenteditable="true">
+                    <li><span class="font-bold">Economic & Risk Analysis:</span> Solid foundation in economic theory and risk management; deep understanding of macroeconomic and micro-financial institutional operations.</li>
+                    <li><span class="font-bold">Regulatory Tech:</span> Proficient in financial regulatory data mining; highly capable of developing Python/Pandas data dashboards independently.</li>
+                    <li><span class="font-bold">Quantitative Modeling:</span> Experience in quantitative data mining models (LightGBM, feature engineering), SQL (DB2), and terminal-first workflows (Docker, Ollama).</li>
+                    <li><span class="font-bold">Communication:</span> Excellent official document drafting and cross-departmental communication skills; multiple-award winner in system-wide data application competitions.</li>
                 </ul>
             </section>
 
-            <!-- Professional Experience -->
             <section class="mb-6 font-serif">
-                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">Professional Experience</h2>
+                <h2 class="text-base sm:text-lg font-bold border-b-2 border-gray-800 pb-1 mb-3 uppercase tracking-wider" contenteditable="true">Professional Experience</h2>
                 
-                <div class="mb-4">
-                    <div class="flex justify-between items-baseline mb-1">
-                        <h3 class="text-base font-bold text-gray-900" contenteditable="true">National Financial Regulatory Administration (NFRA) Nyingchi Sub-Bureau</h3>
-                        <span class="text-sm text-gray-600" contenteditable="true">20XX.XX - Present</span>
+                <div class="mb-5">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-1">
+                        <h3 class="text-base font-bold text-gray-900 leading-tight" contenteditable="true">A National Financial Regulatory Authority (Sub-branch)</h3>
+                        <span class="text-[13.5px] sm:text-sm text-gray-600 mt-1 sm:mt-0 whitespace-nowrap" contenteditable="true">20XX.XX - Present</span>
                     </div>
-                    <div class="flex justify-between text-sm text-gray-700 italic mb-2">
-                        <span contenteditable="true">Head of Banking Institution Supervision Section / Third-Class Chief Senior Staff Member</span>
-                        <span contenteditable="true">Nyingchi, Xizang</span>
+                    <div class="flex flex-col sm:flex-row sm:justify-between text-[13.5px] sm:text-sm text-gray-700 italic mb-2">
+                        <span contenteditable="true">Head of Regulatory Section / Third-Class Chief Senior Staff Member</span>
+                        <span contenteditable="true">City, China</span>
                     </div>
-                    <ul class="list-disc list-inside text-sm leading-relaxed space-y-1 text-gray-800" contenteditable="true">
-                        <li>Oversee off-site supervision and risk screening for banking and insurance institutions across Nyingchi and Qamdo regions.</li>
-                        <li>Lead intelligent credit risk inspections for micro-enterprises using the EAST system, building cross-database models to target regulatory arbitrage.</li>
-                        <li>Developed an interactive web dashboard via Python and Jupyter Notebooks to automatically parse and cross-validate complex 1104 regulatory reports.</li>
-                        <li>Appointed as an anti-corruption supervisor for the administrative penalty inspection team at ADBC Nyingchi Branch (Sep 2026).</li>
+                    <ul class="list-disc list-outside ml-4 text-[13.5px] sm:text-sm leading-relaxed space-y-1.5 text-gray-800" contenteditable="true">
+                        <li>Oversee off-site supervision and risk screening for regional banking and insurance institutions.</li>
+                        <li>Lead intelligent credit risk inspections using regulatory data systems, building cross-database models to precisely target and prevent regulatory arbitrage behaviors.</li>
+                        <li>Developed an interactive web dashboard via Python and Jupyter Notebooks to automatically parse and cross-validate complex regulatory reports, significantly improving off-site inspection efficiency.</li>
+                        <li>Appointed to a supervisory role in a major inspection team to ensure the strict standardization of administrative enforcement procedures.</li>
                     </ul>
                 </div>
 
                 <div class="mb-2">
-                    <div class="flex justify-between items-baseline mb-1">
-                        <h3 class="text-base font-bold text-gray-900" contenteditable="true">Wuhu Customs</h3>
-                        <span class="text-sm text-gray-600" contenteditable="true">20XX.XX - 20XX.XX (1 Year)</span>
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-1">
+                        <h3 class="text-base font-bold text-gray-900 leading-tight" contenteditable="true">A City-level Customs Authority</h3>
+                        <span class="text-[13.5px] sm:text-sm text-gray-600 mt-1 sm:mt-0 whitespace-nowrap" contenteditable="true">20XX.XX - 20XX.XX</span>
                     </div>
-                    <div class="flex justify-between text-sm text-gray-700 italic mb-2">
+                    <div class="flex flex-col sm:flex-row sm:justify-between text-[13.5px] sm:text-sm text-gray-700 italic mb-2">
                         <span contenteditable="true">Customs Officer</span>
-                        <span contenteditable="true">Wuhu, Anhui</span>
+                        <span contenteditable="true">City, China</span>
                     </div>
-                    <ul class="list-disc list-inside text-sm leading-relaxed text-gray-800" contenteditable="true">
+                    <ul class="list-disc list-outside ml-4 text-[13.5px] sm:text-sm leading-relaxed text-gray-800" contenteditable="true">
                         <li>Responsible for customs clearance inspection and statistical analysis of import/export goods, gaining extensive experience in state administrative enforcement.</li>
                     </ul>
                 </div>
             </section>
 
-            <!-- Projects & Technical Skills -->
             <section class="mb-6 font-serif">
-                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">Projects & Technical Stack</h2>
-                <div class="text-sm leading-relaxed text-gray-800">
-                    <div class="mb-2" contenteditable="true">
-                        <strong>Quantitative Trading & Data:</strong> Developed A-share short-term quantitative trading models using LightGBM and proxy market feeds for T+1/T+2 strategy evaluation; familiar with FRM credit and market risk frameworks.
+                <h2 class="text-base sm:text-lg font-bold border-b-2 border-gray-800 pb-1 mb-3 uppercase tracking-wider" contenteditable="true">Projects & Technical Stack</h2>
+                <div class="text-[13.5px] sm:text-sm leading-relaxed text-gray-800 space-y-2">
+                    <div contenteditable="true">
+                        <span class="font-bold text-gray-900">Data Mining:</span> Developed quantitative data analysis models using LightGBM and feature engineering; familiar with credit and market risk assessment frameworks.
                     </div>
-                    <div class="mb-2" contenteditable="true">
-                        <strong>Development & Tools:</strong> Python (Pandas), SQL (DB2), Docker, macOS zsh workflows, GitHub Pages deployment.
+                    <div contenteditable="true">
+                        <span class="font-bold text-gray-900">Development & Tools:</span> Python (Pandas, FastAPI), SQL (DB2), Docker, macOS zsh workflows, GitHub Pages deployment.
                     </div>
-                    <div class="mb-2" contenteditable="true">
-                        <strong>AI & Multimedia Creation:</strong> Deployed local LLM models (Ollama, Dify) and ComfyUI automated video generation workflows; proficient in Final Cut Pro and developing custom Python/3D LUT color grading scripts.
+                    <div contenteditable="true">
+                        <span class="font-bold text-gray-900">AI & Multimedia:</span> Deployed local LLM models (Ollama, Dify) and automated video generation workflows; proficient in Final Cut Pro and developing custom color grading scripts.
                     </div>
                 </div>
             </section>
 
-            <!-- Education -->
             <section class="mb-6 font-serif">
-                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">Education</h2>
-                <div class="mb-2" contenteditable="true">
-                    <div class="flex justify-between font-bold text-sm">
+                <h2 class="text-base sm:text-lg font-bold border-b-2 border-gray-800 pb-1 mb-3 uppercase tracking-wider" contenteditable="true">Education</h2>
+                <div class="mb-3" contenteditable="true">
+                    <div class="flex flex-col sm:flex-row sm:justify-between font-bold text-[13.5px] sm:text-sm leading-tight mb-0.5">
                         <span>Universitat Autònoma de Barcelona</span>
-                        <span>Year</span>
+                        <span class="text-gray-600 font-normal mt-1 sm:mt-0">Year</span>
                     </div>
-                    <div class="text-sm italic">Master in Applied Economics</div>
+                    <div class="text-[13.5px] sm:text-sm italic text-gray-700">Master in Applied Economics</div>
                 </div>
-                <div class="mb-2" contenteditable="true">
-                    <div class="flex justify-between font-bold text-sm">
+                <div class="mb-3" contenteditable="true">
+                    <div class="flex flex-col sm:flex-row sm:justify-between font-bold text-[13.5px] sm:text-sm leading-tight mb-0.5">
                         <span>Belarusian State University</span>
-                        <span>Year</span>
+                        <span class="text-gray-600 font-normal mt-1 sm:mt-0">Year</span>
                     </div>
-                    <div class="text-sm italic">Master in Economics</div>
+                    <div class="text-[13.5px] sm:text-sm italic text-gray-700">Master in Economics</div>
                 </div>
                 <div class="mb-2" contenteditable="true">
-                    <div class="flex justify-between font-bold text-sm">
+                    <div class="flex flex-col sm:flex-row sm:justify-between font-bold text-[13.5px] sm:text-sm leading-tight mb-0.5">
                         <span>[Undergraduate Institution Name], Shanghai</span>
-                        <span>Year</span>
+                        <span class="text-gray-600 font-normal mt-1 sm:mt-0">Year</span>
                     </div>
-                    <div class="text-sm italic">Bachelor in Economics / Related Field</div>
+                    <div class="text-[13.5px] sm:text-sm italic text-gray-700">Bachelor in Economics / Related Field</div>
                 </div>
             </section>
 
-            <!-- Awards -->
             <section class="mb-2 font-serif">
-                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">Awards & Honors</h2>
-                <ul class="list-disc list-inside text-sm leading-relaxed space-y-1 text-gray-800" contenteditable="true">
-                    <li>2nd Prize, Xizang Financial Regulatory Bureau EAST System Application Competition (Apr 2026)</li>
+                <h2 class="text-base sm:text-lg font-bold border-b-2 border-gray-800 pb-1 mb-3 uppercase tracking-wider" contenteditable="true">Awards & Honors</h2>
+                <ul class="list-disc list-outside ml-4 text-[13.5px] sm:text-sm leading-relaxed space-y-1.5 text-gray-800" contenteditable="true">
+                    <li>2nd Prize, Provincial Regulatory System Data Application Competition (Apr 2026)</li>
                     <li>1st Prize, Regional Supervisory Database System Application Competition (Dec 2025 - Jan 2026)</li>
-                    <li>Nominee, Citywide Legal Awareness Work Advanced Individual, Nyingchi (Oct 2026)</li>
+                    <li>Nominee, Citywide Legal Awareness Work Advanced Individual (Oct 2026)</li>
                 </ul>
             </section>
         </div>
-
     </div>
 
     <!-- 交互脚本 -->
     <script>
-        let currentLang = 'cn'; // 默认中文
+        let currentLangCode = 'cn';
 
-        function toggleLanguage() {
-            const cnElements = document.querySelectorAll('.lang-cn');
-            const enElements = document.querySelectorAll('.lang-en');
-            
-            if (currentLang === 'cn') {
-                cnElements.forEach(el => el.style.display = 'none');
-                enElements.forEach(el => el.style.display = 'block');
-                currentLang = 'en';
+        function setLanguage(lang) {
+            currentLangCode = lang;
+            if (lang === 'cn') {
+                document.body.classList.remove('lang-en-active');
+                document.body.classList.add('lang-cn-active');
             } else {
-                cnElements.forEach(el => el.style.display = 'block');
-                enElements.forEach(el => el.style.display = 'none');
-                currentLang = 'cn';
+                document.body.classList.remove('lang-cn-active');
+                document.body.classList.add('lang-en-active');
+            }
+            document.getElementById('lang-dropdown').classList.add('hidden');
+        }
+
+        function toggleLangDropdown(event) {
+            event.stopPropagation();
+            document.getElementById('lang-dropdown').classList.toggle('hidden');
+        }
+
+        window.onclick = function(event) {
+            const dropdown = document.getElementById('lang-dropdown');
+            if (dropdown && !dropdown.classList.contains('hidden')) {
+                dropdown.classList.add('hidden');
             }
         }
 
         function exportToPDF() {
-            // 提示用户正在生成
             const btn = document.querySelector('button[onclick="exportToPDF()"]');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = 'PDF 生成中...';
+            const originalHTML = btn.innerHTML;
+            
+            btn.innerHTML = currentLangCode === 'cn' ? '生成中...' : 'Generating...';
             btn.disabled = true;
 
             const element = document.getElementById('resume-paper');
+            
+            // 确保即使在手机端点击导出，也能强制渲染出 1024px 的桌面版排版，避免 PDF 变形
             const opt = {
-                margin:       0, // 边距已经在 css 的 padding 里设置
-                filename:     'Resume_Cheng_Zhang.pdf',
+                margin:       0,
+                filename:     currentLangCode === 'cn' ? '张澄_简历.pdf' : 'Cheng_Zhang_Resume.pdf',
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, windowWidth: element.scrollWidth },
+                html2canvas:  { scale: 2, useCORS: true, windowWidth: 1024 }, // 强制桌面视口宽度
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // 执行导出
             html2pdf().set(opt).from(element).save().then(() => {
-                // 恢复按钮状态
-                btn.innerHTML = originalText;
+                btn.innerHTML = originalHTML;
                 btn.disabled = false;
             });
         }
