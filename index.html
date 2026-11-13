@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>张澄 (Cheng Zhang) - Resume</title>
+    <!-- 引入 Tailwind CSS 进行专业严肃的排版 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 html2pdf 库用于一键导出 PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        /* 严肃专业的字体设定 */
+        body {
+            font-family: "Times New Roman", STSong, "华文宋体", serif;
+            background-color: #f3f4f6;
+        }
+        
+        /* 禁用所有可编辑元素的鼠标交互和高亮 */
+        [contenteditable="true"] {
+            pointer-events: none; /* 禁止鼠标点击和选择 */
+            outline: none !important; /* 移除任何情况下的轮廓线 */
+            cursor: default;
+        }
+        
+        /* 英文版默认隐藏 */
+        .lang-en {
+            display: none;
+        }
+        
+        /* 打印/导出 PDF 时的样式优化 */
+        @media print {
+            body { background-color: white; }
+            .no-print { display: none !important; }
+            #resume-paper { 
+                box-shadow: none; 
+                margin: 0; 
+                padding: 0;
+                width: 100%;
+                max-width: 100%;
+            }
+            /* 确保在打印状态下也没有任何编辑痕迹 */
+            [contenteditable="true"] {
+                pointer-events: none !important;
+                outline: none !important;
+                background-color: transparent !important;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-900">
+
+    <!-- 顶部控制栏 (不会被打印到 PDF 中) -->
+    <div class="max-w-4xl mx-auto my-6 px-6 no-print">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-lg font-bold font-sans text-gray-800">简历控制台 / Resume Control</h1>
+                <p class="text-sm text-gray-500 font-sans">当前为只读展示模式，不支持在线编辑。</p>
+            </div>
+            <div class="flex gap-3 font-sans">
+                <button onclick="toggleLanguage()" class="px-5 py-2.5 bg-slate-800 text-white text-sm font-medium rounded hover:bg-slate-700 transition shadow">
+                    切换中/英文 (EN/CN)
+                </button>
+                <button onclick="exportToPDF()" class="px-5 py-2.5 bg-blue-700 text-white text-sm font-medium rounded hover:bg-blue-600 transition shadow flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    一键导出 PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 简历主体内容区 (A4 比例) -->
+    <div id="resume-paper" class="max-w-4xl mx-auto bg-white shadow-xl mb-12 box-border" style="min-height: 297mm; padding: 15mm 20mm;">
+        
+        <!-- ==================== 中文版 (Chinese Version) ==================== -->
+        <div class="lang-cn">
+            <!-- 头部信息 -->
+            <header class="border-b-2 border-gray-800 pb-5 mb-6 text-center">
+                <h1 class="text-4xl font-bold tracking-widest mb-3" contenteditable="true">张 澄</h1>
+                <p class="text-xl text-gray-700 mb-3" contenteditable="true">金融监管与数据分析专家</p>
+                <div class="text-sm text-gray-600 flex justify-center gap-6" contenteditable="true">
+                    <span>📍 西藏, 中国</span>
+                    <span>✉️ your.email@example.com</span>
+                    <span>📞 +86 138-XXXX-XXXX</span>
+                    <span>🎂 1995.12</span>
+                </div>
+            </header>
+
+            <!-- 核心优势 -->
+            <section class="mb-6">
+                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">核心优势</h2>
+                <ul class="list-disc list-inside text-sm leading-relaxed space-y-1 text-gray-800" contenteditable="true">
+                    <li>扎实的经济学理论基础与风险管理能力，深刻理解宏观经济与微观金融机构运作机制。</li>
+                    <li>精通金融监管大数据挖掘，熟练运用 EAST、1104 等监管系统，具备独立开发 Python/Pandas 数据看板的能力。</li>
+                    <li>具备 A股量化交易模型开发经验（LightGBM、特征工程），熟练掌握 SQL (DB2) 及终端自动化开发环境（Docker、Ollama）。</li>
+                    <li>出色的公文撰写与跨部门沟通协调能力，多次在系统内监管数据应用比武中斩获优异名次。</li>
+                </ul>
+            </section>
+
+            <!-- 工作经历 -->
+            <section class="mb-6">
+                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">工作经历</h2>
+                
+                <div class="mb-4">
+                    <div class="flex justify-between items-baseline mb-1">
+                        <h3 class="text-base font-bold text-gray-900" contenteditable="true">国家金融监督管理总局林芝监管分局</h3>
+                        <span class="text-sm text-gray-600" contenteditable="true">20XX.XX - 至今</span>
+                    </div>
+                    <div class="flex justify-between text-sm text-gray-700 italic mb-2">
+                        <span contenteditable="true">三级主任科员 / 银行机构监管科负责人</span>
+                        <span contenteditable="true">西藏, 林芝</span>
+                    </div>
+                    <ul class="list-disc list-inside text-sm leading-relaxed space-y-1 text-gray-800" contenteditable="true">
+                        <li>全面负责林芝及昌都地区银行业与保险业金融机构的日常非现场监管与风险排查。</li>
+                        <li>牵头开展辖区小微企业信贷风险智能检查，构建 EAST 系统“工商图谱”与“网络交易”双维穿透模型，精准打击普惠金融套利行为。</li>
+                        <li>自主开发基于 Python 和 Jupyter Notebook 的交互式 Web 数据看板，实现复杂 1104 监管报表的自动解析与交叉校验。</li>
+                        <li>担任中国农业发展银行林芝市分行行政处罚检查组廉政监督员 (2026.09)，严格规范执法流程。</li>
+                    </ul>
+                </div>
+
+                <div class="mb-2">
+                    <div class="flex justify-between items-baseline mb-1">
+                        <h3 class="text-base font-bold text-gray-900" contenteditable="true">芜湖海关</h3>
+                        <span class="text-sm text-gray-600" contenteditable="true">20XX.XX - 20XX.XX (1年)</span>
+                    </div>
+                    <div class="flex justify-between text-sm text-gray-700 italic mb-2">
+                        <span contenteditable="true">关员</span>
+                        <span contenteditable="true">安徽, 芜湖</span>
+                    </div>
+                    <ul class="list-disc list-inside text-sm leading-relaxed text-gray-800" contenteditable="true">
+                        <li>负责进出口货物的通关查验与统计分析工作，积累了丰富的国家行政执法与数据核查经验。</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 个人项目与技能 -->
+            <section class="mb-6">
+                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">项目经验与技术栈</h2>
+                <div class="text-sm leading-relaxed text-gray-800">
+                    <div class="mb-2" contenteditable="true">
+                        <strong>量化交易与数据分析：</strong>独立开发 A股短线量化交易模型，运用 LightGBM 进行特征工程与 T+1/T+2 策略回测；熟悉 FRM（金融风险管理师）信用及市场风险评估体系。
+                    </div>
+                    <div class="mb-2" contenteditable="true">
+                        <strong>开发与生产力工具：</strong>Python (Pandas, FastAPI), SQL (DB2), Docker, 终端环境 (zsh/macOS), GitHub Pages, Markdown。
+                    </div>
+                    <div class="mb-2" contenteditable="true">
+                        <strong>AI与多媒体创作：</strong>熟练部署本地大模型 (Ollama, Dify, OpenClaw) 及 ComfyUI 自动化视频生成工作流；精通 Final Cut Pro 视频剪辑与 Python/3D LUT 数字影像色彩引擎开发。
+                    </div>
+                </div>
+            </section>
+
+            <!-- 教育背景 -->
+            <section class="mb-6">
+                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">教育背景</h2>
+                <div class="mb-2" contenteditable="true">
+                    <div class="flex justify-between font-bold text-sm">
+                        <span>Universitat Autònoma de Barcelona (西班牙巴塞罗那自治大学)</span>
+                        <span>毕业年份</span>
+                    </div>
+                    <div class="text-sm italic">应用经济学 硕士 (Master in Applied Economics)</div>
+                </div>
+                <div class="mb-2" contenteditable="true">
+                    <div class="flex justify-between font-bold text-sm">
+                        <span>Belarusian State University (白俄罗斯国立大学)</span>
+                        <span>毕业年份</span>
+                    </div>
+                    <div class="text-sm italic">经济学 硕士 (Master in Economics)</div>
+                </div>
+                <div class="mb-2" contenteditable="true">
+                    <div class="flex justify-between font-bold text-sm">
+                        <span>上海本科院校 (请填写学校名称)</span>
+                        <span>毕业年份</span>
+                    </div>
+                    <div class="text-sm italic">经济学/相关专业 学士</div>
+                </div>
+            </section>
+
+            <!-- 荣誉与奖项 -->
+            <section class="mb-2">
+                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">荣誉与奖项</h2>
+                <ul class="list-disc list-inside text-sm leading-relaxed space-y-1 text-gray-800" contenteditable="true">
+                    <li>荣获西藏金融监管局 EAST 系统应用比武 全区二等奖 (2026.04)</li>
+                    <li>荣获区域监管数据库系统应用比武 全区一等奖 (2025.12 - 2026.01)</li>
+                    <li>获国家金融监督管理总局林芝监管分局提名为“全市普法工作先进个人” (2026.10)</li>
+                </ul>
+            </section>
+        </div>
+
+
+        <!-- ==================== 英文版 (English Version) ==================== -->
+        <div class="lang-en">
+            <!-- Header -->
+            <header class="border-b-2 border-gray-800 pb-5 mb-6 text-center font-serif">
+                <h1 class="text-4xl font-bold tracking-wide mb-3" contenteditable="true">CHENG ZHANG</h1>
+                <p class="text-xl text-gray-700 mb-3" contenteditable="true">Financial Regulator & Data Analysis Specialist</p>
+                <div class="text-sm text-gray-600 flex justify-center gap-6" contenteditable="true">
+                    <span>📍 Xizang, China</span>
+                    <span>✉️ your.email@example.com</span>
+                    <span>📞 +86 138-XXXX-XXXX</span>
+                    <span>🎂 Dec 1995</span>
+                </div>
+            </header>
+
+            <!-- Core Competencies -->
+            <section class="mb-6 font-serif">
+                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">Core Competencies</h2>
+                <ul class="list-disc list-inside text-sm leading-relaxed space-y-1 text-gray-800" contenteditable="true">
+                    <li>Solid foundation in economic theory and risk management; deep understanding of macroeconomic and micro-financial institutional operations.</li>
+                    <li>Proficient in financial regulatory data mining using EAST and 1104 systems; highly capable of developing Python/Pandas data dashboards independently.</li>
+                    <li>Experience in quantitative trading model development (A-shares, LightGBM, feature engineering), SQL (DB2), and terminal-first workflows (Docker, Ollama).</li>
+                    <li>Excellent official document drafting and cross-departmental communication skills; multiple-award winner in system-wide regulatory data application competitions.</li>
+                </ul>
+            </section>
+
+            <!-- Professional Experience -->
+            <section class="mb-6 font-serif">
+                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">Professional Experience</h2>
+                
+                <div class="mb-4">
+                    <div class="flex justify-between items-baseline mb-1">
+                        <h3 class="text-base font-bold text-gray-900" contenteditable="true">National Financial Regulatory Administration (NFRA) Nyingchi Sub-Bureau</h3>
+                        <span class="text-sm text-gray-600" contenteditable="true">20XX.XX - Present</span>
+                    </div>
+                    <div class="flex justify-between text-sm text-gray-700 italic mb-2">
+                        <span contenteditable="true">Head of Banking Institution Supervision Section / Third-Class Chief Senior Staff Member</span>
+                        <span contenteditable="true">Nyingchi, Xizang</span>
+                    </div>
+                    <ul class="list-disc list-inside text-sm leading-relaxed space-y-1 text-gray-800" contenteditable="true">
+                        <li>Oversee off-site supervision and risk screening for banking and insurance institutions across Nyingchi and Qamdo regions.</li>
+                        <li>Lead intelligent credit risk inspections for micro-enterprises using the EAST system, building cross-database models to target regulatory arbitrage.</li>
+                        <li>Developed an interactive web dashboard via Python and Jupyter Notebooks to automatically parse and cross-validate complex 1104 regulatory reports.</li>
+                        <li>Appointed as an anti-corruption supervisor for the administrative penalty inspection team at ADBC Nyingchi Branch (Sep 2026).</li>
+                    </ul>
+                </div>
+
+                <div class="mb-2">
+                    <div class="flex justify-between items-baseline mb-1">
+                        <h3 class="text-base font-bold text-gray-900" contenteditable="true">Wuhu Customs</h3>
+                        <span class="text-sm text-gray-600" contenteditable="true">20XX.XX - 20XX.XX (1 Year)</span>
+                    </div>
+                    <div class="flex justify-between text-sm text-gray-700 italic mb-2">
+                        <span contenteditable="true">Customs Officer</span>
+                        <span contenteditable="true">Wuhu, Anhui</span>
+                    </div>
+                    <ul class="list-disc list-inside text-sm leading-relaxed text-gray-800" contenteditable="true">
+                        <li>Responsible for customs clearance inspection and statistical analysis of import/export goods, gaining extensive experience in state administrative enforcement.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Projects & Technical Skills -->
+            <section class="mb-6 font-serif">
+                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">Projects & Technical Stack</h2>
+                <div class="text-sm leading-relaxed text-gray-800">
+                    <div class="mb-2" contenteditable="true">
+                        <strong>Quantitative Trading & Data:</strong> Developed A-share short-term quantitative trading models using LightGBM and proxy market feeds for T+1/T+2 strategy evaluation; familiar with FRM credit and market risk frameworks.
+                    </div>
+                    <div class="mb-2" contenteditable="true">
+                        <strong>Development & Tools:</strong> Python (Pandas), SQL (DB2), Docker, macOS zsh workflows, GitHub Pages deployment.
+                    </div>
+                    <div class="mb-2" contenteditable="true">
+                        <strong>AI & Multimedia Creation:</strong> Deployed local LLM models (Ollama, Dify) and ComfyUI automated video generation workflows; proficient in Final Cut Pro and developing custom Python/3D LUT color grading scripts.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Education -->
+            <section class="mb-6 font-serif">
+                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">Education</h2>
+                <div class="mb-2" contenteditable="true">
+                    <div class="flex justify-between font-bold text-sm">
+                        <span>Universitat Autònoma de Barcelona</span>
+                        <span>Year</span>
+                    </div>
+                    <div class="text-sm italic">Master in Applied Economics</div>
+                </div>
+                <div class="mb-2" contenteditable="true">
+                    <div class="flex justify-between font-bold text-sm">
+                        <span>Belarusian State University</span>
+                        <span>Year</span>
+                    </div>
+                    <div class="text-sm italic">Master in Economics</div>
+                </div>
+                <div class="mb-2" contenteditable="true">
+                    <div class="flex justify-between font-bold text-sm">
+                        <span>[Undergraduate Institution Name], Shanghai</span>
+                        <span>Year</span>
+                    </div>
+                    <div class="text-sm italic">Bachelor in Economics / Related Field</div>
+                </div>
+            </section>
+
+            <!-- Awards -->
+            <section class="mb-2 font-serif">
+                <h2 class="text-lg font-bold border-b border-gray-400 pb-1 mb-3 uppercase" contenteditable="true">Awards & Honors</h2>
+                <ul class="list-disc list-inside text-sm leading-relaxed space-y-1 text-gray-800" contenteditable="true">
+                    <li>2nd Prize, Xizang Financial Regulatory Bureau EAST System Application Competition (Apr 2026)</li>
+                    <li>1st Prize, Regional Supervisory Database System Application Competition (Dec 2025 - Jan 2026)</li>
+                    <li>Nominee, Citywide Legal Awareness Work Advanced Individual, Nyingchi (Oct 2026)</li>
+                </ul>
+            </section>
+        </div>
+
+    </div>
+
+    <!-- 交互脚本 -->
+    <script>
+        let currentLang = 'cn'; // 默认中文
+
+        function toggleLanguage() {
+            const cnElements = document.querySelectorAll('.lang-cn');
+            const enElements = document.querySelectorAll('.lang-en');
+            
+            if (currentLang === 'cn') {
+                cnElements.forEach(el => el.style.display = 'none');
+                enElements.forEach(el => el.style.display = 'block');
+                currentLang = 'en';
+            } else {
+                cnElements.forEach(el => el.style.display = 'block');
+                enElements.forEach(el => el.style.display = 'none');
+                currentLang = 'cn';
+            }
+        }
+
+        function exportToPDF() {
+            // 提示用户正在生成
+            const btn = document.querySelector('button[onclick="exportToPDF()"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'PDF 生成中...';
+            btn.disabled = true;
+
+            const element = document.getElementById('resume-paper');
+            const opt = {
+                margin:       0, // 边距已经在 css 的 padding 里设置
+                filename:     'Resume_Cheng_Zhang.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, windowWidth: element.scrollWidth },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // 执行导出
+            html2pdf().set(opt).from(element).save().then(() => {
+                // 恢复按钮状态
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
