@@ -33,7 +33,9 @@
 
         /* 导出 PDF 时的绝对尺寸控制，确保分页间隔完美且右侧不被裁剪 */
         .pdf-export-mode {
-            padding: 0 !important;
+            /* 核心修复：增加 2mm 的左右内边距作为“渲染安全区”，防止衬线字体左侧溢出被 Canvas 切割 */
+            padding: 0 2mm !important;
+            box-sizing: border-box !important;
             width: 170mm !important; /* A4(210) - 左右各20mm边距 */
             max-width: 170mm !important;
             min-height: auto !important;
@@ -41,7 +43,7 @@
             box-shadow: none !important;
         }
 
-        /* 核心修复：防止底层渲染引擎将文字和区块从中间切断 */
+        /* 防止底层渲染引擎将文字和区块从中间切断 */
         li, h2, h3, p, .mb-5, .mb-3, .mb-2 {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
@@ -78,7 +80,6 @@
                     </div>
                 </div>
                 
-                <!-- 精简后的导出按钮 -->
                 <button onclick="exportToPDF()" class="px-3 py-1.5 bg-blue-700 text-white text-sm font-medium rounded hover:bg-blue-600 transition shadow flex items-center gap-1.5">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                     <span class="lang-cn">导出</span>
@@ -331,7 +332,6 @@
         </div>
     </div>
 
-    <!-- 交互脚本 -->
     <script>
         let currentLangCode = 'cn';
 
@@ -376,7 +376,6 @@
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2, useCORS: true, windowWidth: 820 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                // 核心防切割逻辑：告诉生成引擎，遇到列表项(li)和标题区块时，宁可推到下一页，也绝不从中间切断
                 pagebreak:    { mode: ['css', 'legacy'], avoid: ['li', 'h2', 'h3', '.mb-5', '.mb-3', '.mb-2', 'p'] }
             };
 
